@@ -4,6 +4,7 @@ import "./globals.css";
 import { Montserrat } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
+import Provider from "./Provider";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -28,12 +29,13 @@ export default function RootLayout({
     <ClerkProvider
       appearance={{
         baseTheme: dark,
-        variables : {colorPrimary : "#3371ff" , fontSize : "16px"},
-
+        variables: { colorPrimary: "#3371ff", fontSize: "16px" },
       }}
     >
       <html lang="en">
-        <body className={` ${geistMono.variable} antialiased`}>{children}</body>
+        <body className={` ${geistMono.variable} antialiased`}>
+          <Provider>{children}</Provider>
+        </body>
       </html>
     </ClerkProvider>
   );
