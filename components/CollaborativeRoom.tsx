@@ -11,30 +11,34 @@ import {
 } from "@clerk/nextjs";
 import Header from "./Header";
 import { Editor } from "./editor/Editor";
+import ActiveCollaborators from "./ActiveCollaborators";
 
-const CollaborativeRoot = () => {
+const CollaborativeRoot = ({roomId,roomMetadata}: CollaborativeRoomProps) => {
   return (
-    <div>
-      <RoomProvider id="my-room">
+      <RoomProvider id={roomId}>
         <ClientSideSuspense fallback={<Loader />}>
           <div className="collaborative-room">
             <Header>
               <div className="flex w-fit items-center justify-center gap-2">
                 <p className="document-title">Share</p>
               </div>
-              <SignedOut>
+              <div className="flex w-full flex-1 justify-end gap-2 sm:gap-3">
+
+                <ActiveCollaborators />
+                <SignedOut>
                 <SignInButton />
                 <SignUpButton />
               </SignedOut>
               <SignedIn>
                 <UserButton />
               </SignedIn>
+              </div>
             </Header>
             <Editor />
           </div>
         </ClientSideSuspense>
       </RoomProvider>
-    </div>
+    
   );
 };
 

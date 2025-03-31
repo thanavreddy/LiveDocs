@@ -1,7 +1,5 @@
 'use server'
-
 import { nanoid } from "nanoid";
-import { title } from "process";
 import { liveblocks } from "../liveblocks";
 import { revalidatePath } from "next/cache";
 import { parseStringify } from "../utils";
@@ -17,14 +15,13 @@ export const createDocument = async ({
       email,
       title: "Untitled",
     };
-
     const usersAccesses: RoomAccesses = {
       [email]: ["room:write"],
     };
-    const room = await liveblocks.createRoom(roomId,{
+    const room = await liveblocks.createRoom(roomId, {
       metadata,
       usersAccesses,
-      defaultAccesses: [],
+      defaultAccesses: ["room:write"], //only for the time being
     });
     revalidatePath('/');
 
@@ -33,3 +30,24 @@ export const createDocument = async ({
     console.log(`error occured while creating a room ${error}`);
   }
 };
+
+
+export const getDocument = async({roomId,userId} : {roomId:string,userId:string})=>{
+try{
+  const room = await liveblocks.getRoom(roomId);
+
+  // TODO: bring this back later on
+  //  const hasAccess = Object.keys(room.usersAccesses).includes(userId)
+
+  //  if(!hasAccess){
+
+  //   throw new Error("you do not have acceess")
+  //  }
+
+   return parseStringify(room)
+  }
+  catch(error){
+
+    console.log(`error occured while getting the room ${error}`)
+  }
+}
