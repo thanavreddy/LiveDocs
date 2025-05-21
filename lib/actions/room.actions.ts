@@ -32,22 +32,29 @@ export const createDocument = async ({
 };
 
 
-export const getDocument = async({roomId,userId} : {roomId:string,userId:string})=>{
-try{
-  const room = await liveblocks.getRoom(roomId);
+export const getDocument = async({roomId, userId}: {roomId: string, userId: string}) => {
+  try {
+    const room = await liveblocks.getRoom(roomId);
+    
+    if (!room) {
+      throw new Error("Room not found");
+    }
+    
+    // Check if the user has access by email
+    // The issue is likely here - we need to compare with all possible formats
+    const hasAccess = Object.keys(room.usersAccesses || {}).some(accessKey => 
+      accessKey.toLowerCase() === userId.toLowerCase()
+    );
 
-  // TODO: bring this back later on
-  //  const hasAccess = Object.keys(room.usersAccesses).includes(userId)
+    if (!hasAccess) {
+      console.log("Access denied. Available keys:", Object.keys(room.usersAccesses || {}));
+      console.log("User requesting access:", userId);
+      throw new Error("You do not have access to this room");
+    }
 
-  //  if(!hasAccess){
-
-  //   throw new Error("you do not have acceess")
-  //  }
-
-   return parseStringify(room)
-  }
-  catch(error){
-
-    console.log(`error occured while getting the room ${error}`)
+    return parseStringify(room);
+  } catch (error) {
+    console.error(`Error occurred while getting the room: ${error}`);
+    return null; // Return null instead of undefined
   }
 }
