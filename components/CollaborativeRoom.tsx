@@ -21,6 +21,8 @@ import { updateDocument } from "@/lib/actions/room.actions";
 const CollaborativeRoot = ({
   roomId,
   roomMetadata,
+  users,
+  currentUserType,
 }: CollaborativeRoomProps) => {
   const { user } = useUser(); // ✅ Use Client-Side Hook
   const [editing, setEditing] = useState(false);
@@ -30,7 +32,7 @@ const CollaborativeRoot = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const currentUserType = user ? "editor" : "viewer"; // ✅ Get user role dynamically
+  // Use the passed currentUserType prop instead of determining it dynamically
 
   const updateTitleHandler = async (roomId: string, documentTitle: string, e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
