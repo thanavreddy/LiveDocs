@@ -2,7 +2,7 @@
 
 import { RoomProvider, ClientSideSuspense } from "@liveblocks/react";
 import Image from "next/image";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Loader from "./Loader";
 import {
   SignedOut,
@@ -16,6 +16,7 @@ import Header from "./Header";
 import { Editor } from "./editor/Editor";
 import ActiveCollaborators from "./ActiveCollaborators";
 import { Input } from "./ui/input";
+import { updateDocument } from "@/lib/actions/room.actions";
 
 const CollaborativeRoot = ({
   roomId,
@@ -28,18 +29,47 @@ const CollaborativeRoot = ({
 
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  
+
   const currentUserType = user ? "editor" : "viewer"; // ✅ Get user role dynamically
 
-  const updateTitleHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const updateTitleHandler = async (roomId: string, documentTitle: string, e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       setLoading(true);
-      setTimeout(() => {
-        setEditing(false);
-        setLoading(false);
-      }, 1000);
+      try{
+        if(documentTitle !== roomMetadata.title){
+          const updatedDocument  = await updateDocument(roomId,documentTitle);
+        }
+      }
+      catch(error){
+        console.log(error)
+      }
+    setLoading(false)
     }
+
   };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
+        setEditing(false);
+              updateDocument(roomId,documentTitle);
+
+      }
+    };
+    return () => {
+      document.addEventListener("mousedown", handleClickOutside);
+    };
+  }, [roomId,documentTitle]);
+
+  useEffect(()=>{
+    if(editing && inputRef.current ){
+      inputRef.current.focus();
+    }
+  },[editing])
+
 
   return (
     <RoomProvider id={roomId}>
@@ -55,7 +85,7 @@ const CollaborativeRoot = ({
                   placeholder="Enter Title"
                   onChange={(e) => setDocumentTitle(e.target.value)}
                   onKeyDown={updateTitleHandler}
-                  disabled={!editing} 
+                  disabled={!editing}
                   // ✅ Fixed typo
                   className="document-title-input"
                 />

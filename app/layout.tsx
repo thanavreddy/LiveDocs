@@ -32,7 +32,7 @@ export default function RootLayout({
         variables: { colorPrimary: "#3371ff", fontSize: "16px" },
       }}
     >
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body className={` ${geistMono.variable} antialiased`}>
           <Provider>{children}</Provider>
         </body>

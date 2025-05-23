@@ -6,25 +6,25 @@ import { liveblocks } from "../liveblocks";
 
 export const getClerkUsers = async ({ userIds }: { userIds: string[] }) => {
   try {
-    const { data } = await clerkClient.users.getUserList({
-      emailAddresses: userIds, // ✅ Corrected field name
-    });
-
-    const users = data.map((user) => ({
-      id: user.id,
-      name: `${user.firstName} ${user.lastName}`,
-      email: user.emailAddresses[0]?.emailAddress, // ✅ Added optional chaining
-      avatar: user.imageUrl,
+    // Get a paginated list of all users
+    const allUsers = await clerkClient.users.getUserList();
+    
+    // Note: userIds are actually email addresses from room.usersAccesses
+    const matchedUsers = allUsers.filter((user: any) => 
+      user.emailAddresses.some((email: any) => 
+        userIds.includes(email.emailAddress)
+      )
+    );    const users = matchedUsers.filter(Boolean).map((user: any) => ({
+      id: user!.id,
+      name: `${user!.firstName ?? ""} ${user!.lastName ?? ""}`.trim(),
+      email: user!.emailAddresses[0].emailAddress,
+      avatar: user!.imageUrl,
     }));
 
-    const sortedUsers = userIds
-      .map((email) => users.find((user) => user.email === email))
-      .filter(Boolean); // ✅ Prevents undefined values
-
-    return parseStringify(sortedUsers);
+    return users;
   } catch (error) {
-    console.error(`Error fetching users: ${error}`);
-    return [];
+    console.error("Error fetching users:", error);
+    return []; // Prevents crashing when calling .map on result
   }
 };
 
