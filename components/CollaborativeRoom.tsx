@@ -58,7 +58,7 @@ const CollaborativeRoot = ({
       ) {
         setEditing(false);
               updateDocument(roomId,documentTitle);
-
+              console.log(roomMetadata)
       }
     };
     return () => {
