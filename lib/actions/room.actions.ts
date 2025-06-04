@@ -76,3 +76,16 @@ console.log(error)
 
 
 }
+
+
+export const getDocuments = async(email:String) => {
+  try {
+    const rooms = await liveblocks.getRooms({userId:email});
+    
+
+    return parseStringify(rooms);
+  } catch (error) {
+    console.error(`Error occurred while getting the rooms: ${error}`);
+    return null; // Return null instead of undefined
+  }
+}

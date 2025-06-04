@@ -28,12 +28,9 @@ const CollaborativeRoot = ({
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [documentTitle, setDocumentTitle] = useState(roomMetadata.title);
-
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
   // Use the passed currentUserType prop instead of determining it dynamically
-
   const updateTitleHandler = async (roomId: string, documentTitle: string, e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       setLoading(true);
