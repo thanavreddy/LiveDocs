@@ -1,8 +1,7 @@
 "use client";
-
 import Theme from "./plugins/Theme";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
-import { HeadingNode } from "@lexical/rich-text";
+import {HeadingNode} from '@lexical/rich-text'
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
